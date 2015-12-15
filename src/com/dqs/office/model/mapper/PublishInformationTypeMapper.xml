@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="PublishInformationType">
+
+	<resultMap id="RM.PublishInformationType" type="com.dqs.office.model.PublishInformationType">
+        <result property="id" column="ID"/>
+        <result property="typeName" column="TYPE_NAME"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="PublishInformationType.columns">
+	    <![CDATA[
+		ID,TYPE_NAME
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="PublishInformationType.insert" >
+    <![CDATA[
+        INSERT INTO T_PUBLISH_INFORMATION_TYPE (
+        	ID ,
+        	TYPE_NAME 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{typeName,jdbcType=VARCHAR} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_PUBLISH_INFORMATION_TYPE.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="PublishInformationType.update" >
+    <![CDATA[
+        UPDATE T_PUBLISH_INFORMATION_TYPE SET
+	        TYPE_NAME = #{typeName,jdbcType=VARCHAR} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="PublishInformationType.delete">
+    <![CDATA[
+        DELETE FROM T_PUBLISH_INFORMATION_TYPE WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="PublishInformationType.getById" resultMap="RM.PublishInformationType">
+		SELECT <include refid="PublishInformationType.columns" />
+	    <![CDATA[
+		    FROM T_PUBLISH_INFORMATION_TYPE 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="PublishInformationType.findAll" resultMap="RM.PublishInformationType">
+		SELECT <include refid="PublishInformationType.columns" />
+	    <![CDATA[
+		    FROM T_PUBLISH_INFORMATION_TYPE 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="PublishInformationType.baseCode" resultMap="RM.PublishInformationType">
+		SELECT <include refid="PublishInformationType.columns" />
+	    <![CDATA[
+		    FROM T_PUBLISH_INFORMATION_TYPE 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="PublishInformationType.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(typeName)">
+				AND TYPE_NAME = #{typeName}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="PublishInformationType.findPage.count" resultType="long">
+        SELECT count(*) FROM T_PUBLISH_INFORMATION_TYPE 
+		<include refid="PublishInformationType.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="PublishInformationType.findPage" resultMap="RM.PublishInformationType">
+    	SELECT <include refid="PublishInformationType.columns" />
+	    FROM T_PUBLISH_INFORMATION_TYPE 
+		<include refid="PublishInformationType.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+	
+</mapper>
+

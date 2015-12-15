@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="ReportInformationStatus">
+
+	<resultMap id="RM.ReportInformationStatus" type="com.dqs.office.model.ReportInformationStatus">
+        <result property="id" column="ID"/>
+        <result property="statusName" column="STATUS_NAME"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="ReportInformationStatus.columns">
+	    <![CDATA[
+		ID,STATUS_NAME
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="ReportInformationStatus.insert" >
+    <![CDATA[
+        INSERT INTO T_REPORT_INFORMATION_STATUS (
+        	ID ,
+        	STATUS_NAME 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{statusName,jdbcType=VARCHAR} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_REPORT_INFORMATION_STATUS.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="ReportInformationStatus.update" >
+    <![CDATA[
+        UPDATE T_REPORT_INFORMATION_STATUS SET
+	        STATUS_NAME = #{statusName,jdbcType=VARCHAR} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="ReportInformationStatus.delete">
+    <![CDATA[
+        DELETE FROM T_REPORT_INFORMATION_STATUS WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="ReportInformationStatus.getById" resultMap="RM.ReportInformationStatus">
+		SELECT <include refid="ReportInformationStatus.columns" />
+	    <![CDATA[
+		    FROM T_REPORT_INFORMATION_STATUS 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="ReportInformationStatus.findAll" resultMap="RM.ReportInformationStatus">
+		SELECT <include refid="ReportInformationStatus.columns" />
+	    <![CDATA[
+		    FROM T_REPORT_INFORMATION_STATUS 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="ReportInformationStatus.baseCode" resultMap="RM.ReportInformationStatus">
+		SELECT <include refid="ReportInformationStatus.columns" />
+	    <![CDATA[
+		    FROM T_REPORT_INFORMATION_STATUS 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="ReportInformationStatus.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(statusName)">
+				AND STATUS_NAME = #{statusName}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="ReportInformationStatus.findPage.count" resultType="long">
+        SELECT count(*) FROM T_REPORT_INFORMATION_STATUS 
+		<include refid="ReportInformationStatus.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="ReportInformationStatus.findPage" resultMap="RM.ReportInformationStatus">
+    	SELECT <include refid="ReportInformationStatus.columns" />
+	    FROM T_REPORT_INFORMATION_STATUS 
+		<include refid="ReportInformationStatus.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+	
+</mapper>
+

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="RescueMember">
+
+	<resultMap id="RM.RescueMember" type="com.dqs.biz.model.RescueMember">
+        <result property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="gender" column="GENDER"/>
+        <result property="birthday" column="BIRTHDAY"/>
+        <result property="nation" column="NATION"/>
+        <result property="bloodType" column="BLOOD_TYPE"/>
+        <result property="height" column="HEIGHT"/>
+        <result property="weight" column="WEIGHT"/>
+        <result property="politicalLandscape" column="POLITICAL_LANDSCAPE"/>
+        <result property="idno" column="IDNO"/>
+        <result property="telphone" column="TELPHONE"/>
+        <result property="workUnit" column="WORK_UNIT"/>
+        <result property="workAddress" column="WORK_ADDRESS"/>
+        <result property="cellphone" column="CELLPHONE"/>
+        <result property="homePhone" column="HOME_PHONE"/>
+        <result property="homeAddress" column="HOME_ADDRESS"/>
+        <result property="contactsName1" column="CONTACTS_NAME1"/>
+        <result property="contactsRelation1" column="CONTACTS_RELATION1"/>
+        <result property="contactsPhone1" column="CONTACTS_PHONE1"/>
+        <result property="contactsName2" column="CONTACTS_NAME2"/>
+        <result property="contactsRelation2" column="CONTACTS_RELATION2"/>
+        <result property="contactsPhone2" column="CONTACTS_PHONE2"/>
+        <result property="teamId" column="TEAM_ID"/>
+        <result property="fcu" column="FCU"/>
+        <result property="fcd" column="FCD"/>
+        <result property="lcu" column="LCU"/>
+        <result property="lcd" column="LCD"/>
+        <association property="rescueMemberDetailinfo" column="ID" select="RescueMemberDetailinfo.getById"/>
+        <association property="rescueTeam" column="TEAM_ID" select="RescueTeam.getById"/>
+        <collection property="memberGroups" column="ID" javaType="java.util.HashSet" ofType="com.dqs.biz.model.MemberGroup" select="MemberGroup.getGroupsByMemberId"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="RescueMember.columns">
+	    <![CDATA[
+		ID,NAME,GENDER,BIRTHDAY,NATION,BLOOD_TYPE,HEIGHT,WEIGHT,POLITICAL_LANDSCAPE,IDNO,TELPHONE,WORK_UNIT,WORK_ADDRESS,CELLPHONE,HOME_PHONE,HOME_ADDRESS,CONTACTS_NAME1,CONTACTS_RELATION1,CONTACTS_PHONE1,CONTACTS_NAME2,CONTACTS_RELATION2,CONTACTS_PHONE2,TEAM_ID,FCU,FCD,LCU,LCD
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="RescueMember.insert" >
+    <![CDATA[
+        INSERT INTO T_RESCUE_MEMBER (
+        	ID ,
+        	NAME ,
+        	GENDER ,
+        	BIRTHDAY ,
+        	NATION ,
+        	BLOOD_TYPE ,
+        	HEIGHT ,
+        	WEIGHT ,
+        	POLITICAL_LANDSCAPE ,
+        	IDNO ,
+        	TELPHONE ,
+        	WORK_UNIT ,
+        	WORK_ADDRESS ,
+        	CELLPHONE ,
+        	HOME_PHONE ,
+        	HOME_ADDRESS ,
+        	CONTACTS_NAME1 ,
+        	CONTACTS_RELATION1 ,
+        	CONTACTS_PHONE1 ,
+        	CONTACTS_NAME2 ,
+        	CONTACTS_RELATION2 ,
+        	CONTACTS_PHONE2 ,
+        	TEAM_ID ,
+        	FCU ,
+        	FCD ,
+        	LCU ,
+        	LCD 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{name,jdbcType=VARCHAR} ,
+        	#{gender,jdbcType=VARCHAR} ,
+        	#{birthday,jdbcType=TIMESTAMP} ,
+        	#{nation,jdbcType=VARCHAR} ,
+        	#{bloodType,jdbcType=VARCHAR} ,
+        	#{height,jdbcType=DECIMAL} ,
+        	#{weight,jdbcType=DECIMAL} ,
+        	#{politicalLandscape,jdbcType=VARCHAR} ,
+        	#{idno,jdbcType=VARCHAR} ,
+        	#{telphone,jdbcType=VARCHAR} ,
+        	#{workUnit,jdbcType=VARCHAR} ,
+        	#{workAddress,jdbcType=VARCHAR} ,
+        	#{cellphone,jdbcType=VARCHAR} ,
+        	#{homePhone,jdbcType=VARCHAR} ,
+        	#{homeAddress,jdbcType=VARCHAR} ,
+        	#{contactsName1,jdbcType=VARCHAR} ,
+        	#{contactsRelation1,jdbcType=VARCHAR} ,
+        	#{contactsPhone1,jdbcType=VARCHAR} ,
+        	#{contactsName2,jdbcType=VARCHAR} ,
+        	#{contactsRelation2,jdbcType=VARCHAR} ,
+        	#{contactsPhone2,jdbcType=VARCHAR} ,
+        	#{teamId,jdbcType=DECIMAL} ,
+        	#{fcu,jdbcType=DECIMAL} ,
+        	#{fcd,jdbcType=TIMESTAMP} ,
+        	#{lcu,jdbcType=DECIMAL} ,
+        	#{lcd,jdbcType=TIMESTAMP} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_RESCUE_MEMBER.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="RescueMember.update" >
+    <![CDATA[
+        UPDATE T_RESCUE_MEMBER SET
+	        NAME = #{name,jdbcType=VARCHAR} ,
+	        GENDER = #{gender,jdbcType=VARCHAR} ,
+	        BIRTHDAY = #{birthday,jdbcType=TIMESTAMP} ,
+	        NATION = #{nation,jdbcType=VARCHAR} ,
+	        BLOOD_TYPE = #{bloodType,jdbcType=VARCHAR} ,
+	        HEIGHT = #{height,jdbcType=DECIMAL} ,
+	        WEIGHT = #{weight,jdbcType=DECIMAL} ,
+	        POLITICAL_LANDSCAPE = #{politicalLandscape,jdbcType=VARCHAR} ,
+	        IDNO = #{idno,jdbcType=VARCHAR} ,
+	        TELPHONE = #{telphone,jdbcType=VARCHAR} ,
+	        WORK_UNIT = #{workUnit,jdbcType=VARCHAR} ,
+	        WORK_ADDRESS = #{workAddress,jdbcType=VARCHAR} ,
+	        CELLPHONE = #{cellphone,jdbcType=VARCHAR} ,
+	        HOME_PHONE = #{homePhone,jdbcType=VARCHAR} ,
+	        HOME_ADDRESS = #{homeAddress,jdbcType=VARCHAR} ,
+	        CONTACTS_NAME1 = #{contactsName1,jdbcType=VARCHAR} ,
+	        CONTACTS_RELATION1 = #{contactsRelation1,jdbcType=VARCHAR} ,
+	        CONTACTS_PHONE1 = #{contactsPhone1,jdbcType=VARCHAR} ,
+	        CONTACTS_NAME2 = #{contactsName2,jdbcType=VARCHAR} ,
+	        CONTACTS_RELATION2 = #{contactsRelation2,jdbcType=VARCHAR} ,
+	        CONTACTS_PHONE2 = #{contactsPhone2,jdbcType=VARCHAR} ,
+	        TEAM_ID = #{teamId,jdbcType=DECIMAL} ,
+	        FCU = #{fcu,jdbcType=DECIMAL} ,
+	        FCD = #{fcd,jdbcType=TIMESTAMP} ,
+	        LCU = #{lcu,jdbcType=DECIMAL} ,
+	        LCD = #{lcd,jdbcType=TIMESTAMP} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="RescueMember.delete">
+    <![CDATA[
+        DELETE FROM T_RESCUE_MEMBER WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="RescueMember.getById" resultMap="RM.RescueMember">
+		SELECT <include refid="RescueMember.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_MEMBER 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="RescueMember.findAll" resultMap="RM.RescueMember">
+		SELECT <include refid="RescueMember.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_MEMBER 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="RescueMember.baseCode" resultMap="RM.RescueMember">
+		SELECT <include refid="RescueMember.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_MEMBER 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="RescueMember.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(name)">
+				AND NAME like '%'||#{name}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(gender)">
+				AND GENDER = #{gender}
+			</if>
+	       <if test="@Ognl@isNotEmpty(birthdayBegin)">
+				AND BIRTHDAY >= #{birthdayBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(birthdayEnd)">
+				AND BIRTHDAY &lt;= #{birthdayEnd}
+		   </if>
+	       <if test="@Ognl@isNotEmpty(nation)">
+				AND NATION = #{nation}
+			</if>
+	       <if test="@Ognl@isNotEmpty(bloodType)">
+				AND BLOOD_TYPE = #{bloodType}
+			</if>
+	       <if test="@Ognl@isNotEmpty(height)">
+				AND HEIGHT = #{height}
+			</if>
+	       <if test="@Ognl@isNotEmpty(weight)">
+				AND WEIGHT = #{weight}
+			</if>
+	       <if test="@Ognl@isNotEmpty(politicalLandscape)">
+				AND POLITICAL_LANDSCAPE = #{politicalLandscape}
+			</if>
+	       <if test="@Ognl@isNotEmpty(idno)">
+				AND IDNO = #{idno}
+			</if>
+	       <if test="@Ognl@isNotEmpty(telphone)">
+				AND TELPHONE = #{telphone}
+			</if>
+	       <if test="@Ognl@isNotEmpty(workUnit)">
+				AND WORK_UNIT like '%'||#{workUnit}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(workAddress)">
+				AND WORK_ADDRESS like '%'||#{workAddress}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(cellphone)">
+				AND CELLPHONE = #{cellphone}
+			</if>
+	       <if test="@Ognl@isNotEmpty(homePhone)">
+				AND HOME_PHONE = #{homePhone}
+			</if>
+	       <if test="@Ognl@isNotEmpty(homeAddress)">
+				AND HOME_ADDRESS like '%'||#{homeAddress}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(contactsName1)">
+				AND CONTACTS_NAME1 = #{contactsName1}
+			</if>
+	       <if test="@Ognl@isNotEmpty(contactsRelation1)">
+				AND CONTACTS_RELATION1 = #{contactsRelation1}
+			</if>
+	       <if test="@Ognl@isNotEmpty(contactsPhone1)">
+				AND CONTACTS_PHONE1 = #{contactsPhone1}
+			</if>
+	       <if test="@Ognl@isNotEmpty(contactsName2)">
+				AND CONTACTS_NAME2 = #{contactsName2}
+			</if>
+	       <if test="@Ognl@isNotEmpty(contactsRelation2)">
+				AND CONTACTS_RELATION2 = #{contactsRelation2}
+			</if>
+	       <if test="@Ognl@isNotEmpty(contactsPhone2)">
+				AND CONTACTS_PHONE2 = #{contactsPhone2}
+			</if>
+	       <if test="@Ognl@isNotEmpty(teamId)">
+				AND TEAM_ID = #{teamId}
+			</if>
+			   <if test="@Ognl@isNotEmpty(fcu)">
+				AND FCU = #{fcu}
+			</if>
+	       <if test="@Ognl@isNotEmpty(fcdBegin)">
+				AND FCD >= #{fcdBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(fcdEnd)">
+				AND FCD &lt;= #{fcdEnd}
+		   </if>
+	       <if test="@Ognl@isNotEmpty(lcu)">
+				AND LCU = #{lcu}
+			</if>
+	       <if test="@Ognl@isNotEmpty(lcdBegin)">
+				AND LCD >= #{lcdBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(lcdEnd)">
+				AND LCD &lt;= #{lcdEnd}
+		   </if>
+		</where>
+	</sql>
+		
+    <select id="RescueMember.findPage.count" resultType="long">
+        SELECT count(*) FROM T_RESCUE_MEMBER 
+		<include refid="RescueMember.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="RescueMember.findPage" resultMap="RM.RescueMember">
+    	SELECT <include refid="RescueMember.columns" />
+	    FROM T_RESCUE_MEMBER 
+		<include refid="RescueMember.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+	
+</mapper>
+

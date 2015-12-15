@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="TeamAbility">
+
+	<resultMap id="RM.TeamAbility" type="com.dqs.biz.model.TeamAbility">
+        <result property="id" column="ID"/>
+        <result property="teamId" column="TEAM_ID"/>
+        <result property="abilityId" column="ABILITY_ID"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="TeamAbility.columns">
+	    <![CDATA[
+		ID,TEAM_ID,ABILITY_ID
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="TeamAbility.insert" >
+    <![CDATA[
+        INSERT INTO T_TEAM_ABILITY (
+        	ID ,
+        	TEAM_ID ,
+        	ABILITY_ID 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{teamId,jdbcType=DECIMAL} ,
+        	#{abilityId,jdbcType=DECIMAL} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_TEAM_ABILITY.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="TeamAbility.update" >
+    <![CDATA[
+        UPDATE T_TEAM_ABILITY SET
+	        TEAM_ID = #{teamId,jdbcType=DECIMAL} ,
+	        ABILITY_ID = #{abilityId,jdbcType=DECIMAL} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="TeamAbility.delete">
+    <![CDATA[
+        DELETE FROM T_TEAM_ABILITY WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="TeamAbility.getById" resultMap="RM.TeamAbility">
+		SELECT <include refid="TeamAbility.columns" />
+	    <![CDATA[
+		    FROM T_TEAM_ABILITY 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="TeamAbility.findAll" resultMap="RM.TeamAbility">
+		SELECT <include refid="TeamAbility.columns" />
+	    <![CDATA[
+		    FROM T_TEAM_ABILITY 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="TeamAbility.baseCode" resultMap="RM.TeamAbility">
+		SELECT <include refid="TeamAbility.columns" />
+	    <![CDATA[
+		    FROM T_TEAM_ABILITY 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="TeamAbility.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(teamId)">
+				AND TEAM_ID = #{teamId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(abilityId)">
+				AND ABILITY_ID = #{abilityId}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="TeamAbility.findPage.count" resultType="long">
+        SELECT count(*) FROM T_TEAM_ABILITY 
+		<include refid="TeamAbility.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="TeamAbility.findPage" resultMap="RM.TeamAbility">
+    	SELECT <include refid="TeamAbility.columns" />
+	    FROM T_TEAM_ABILITY 
+		<include refid="TeamAbility.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+<!-- 根据teamId获取救援职能 -->
+  <select id="TeamAbility.getAbilitysByTeamId" resultMap="RM.TeamAbility">
+		SELECT <include refid="TeamAbility.columns" />
+	    <![CDATA[
+		    FROM T_TEAM_ABILITY 
+	        WHERE 
+		        TEAM_ID = #{teamId} 
+	    ]]>
+	</select>
+	
+</mapper>
+

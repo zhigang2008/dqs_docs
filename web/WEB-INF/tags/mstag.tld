@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">  <description><![CDATA["自定义标签"]]></description>
+  <display-name>"steven Tags"</display-name>
+  <tlib-version>1.0</tlib-version>
+  <short-name>ms</short-name>
+  <uri>/steven-tags</uri>
+  <tag>
+    <description><![CDATA[产生菜单项]]></description>
+    <name>menu</name>
+    <tag-class>com.steven.framework.tag.MenuTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description><![CDATA[包含所有菜单内容的菜单项]]></description>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[包含所有菜单内容的菜单项]]></description>
+      <name>menu</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[菜单风格:1-横向多级菜单;2-横向的Navbar菜单,一般使用两级;3-纵向菜单]]></description>
+      <name>style</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[链接target]]></description>
+      <name>target</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[显示到第几级菜单]]></description>
+      <name>level</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[是否显示根菜单,默认不显示]]></description>
+      <name>showRoot</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[是否初始化superfish菜单]]></description>
+      <name>autoInit</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <dynamic-attributes>false</dynamic-attributes>
+  </tag>
+  <!-- Region tag -->
+  <tag>
+    <description><![CDATA[地区位置标签]]></description>
+    <name>region</name>
+    <tag-class>com.steven.framework.tag.RegionTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description><![CDATA[一级元素的name属性]]></description>
+      <name>firstName</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[一级元素的ID属性]]></description>
+      <name>firstId</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[一级元素的value属性]]></description>
+      <name>firstValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[二级元素的name属性]]></description>
+      <name>secondName</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[二级元素的ID属性]]></description>
+      <name>secondId</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[二级元素的value属性]]></description>
+      <name>secondValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[三级元素的name属性]]></description>
+      <name>thirdName</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[三级元素的ID属性]]></description>
+      <name>thirdId</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[三级元素的value属性]]></description>
+      <name>thirdValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[元素的css样式]]></description>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[一级元素的headerKey属性]]></description>
+      <name>headerKey</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description><![CDATA[一级元素的headerValue属性]]></description>
+      <name>headerValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    </tag>
+  <!-- util 辅助标签 -->
+  <!-- 文件大小显示 -->
+  <tag>
+    <name>fileSize</name>
+    <tag-class>com.steven.framework.tag.FileSizeTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+  <!-- 字符串截取 -->
+  <tag>
+    <name>textCut</name>
+    <tag-class>com.steven.framework.tag.TextCutTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>length</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+ <!-- shiro 安全标签 -->
+    <tag>
+    <name>hasPermission</name>
+    <tag-class>org.apache.shiro.web.tags.HasPermissionTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>lacksPermission</name>
+    <tag-class>org.apache.shiro.web.tags.LacksPermissionTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>hasRole</name>
+    <tag-class>org.apache.shiro.web.tags.HasRoleTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>hasAnyRoles</name>
+    <tag-class>org.apache.shiro.web.tags.HasAnyRolesTag</tag-class>
+    <body-content>JSP</body-content>
+     <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>lacksRole</name>
+    <tag-class>org.apache.shiro.web.tags.LacksRoleTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>authenticated</name>
+    <tag-class>org.apache.shiro.web.tags.AuthenticatedTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+
+  <tag>
+    <name>notAuthenticated</name>
+    <tag-class>org.apache.shiro.web.tags.NotAuthenticatedTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+  <tag>
+    <name>user</name>
+    <tag-class>org.apache.shiro.web.tags.UserTag</tag-class>
+    <body-content>JSP</body-content>
+   </tag>
+  <tag>
+    <name>guest</name>
+    <tag-class>org.apache.shiro.web.tags.GuestTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+  <tag>
+    <name>principal</name>
+    <tag-class>org.apache.shiro.web.tags.PrincipalTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>defaultValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <!-- FCKEditor标签 -->
+  <tag>
+		<description>
+			Creates a FCKeditor instance with the given parameters. Any
+			parameter except instanceName which is empty or contains
+			whitespace only will be ignored.
+		</description>
+		<display-name>editor</display-name>
+		<name>editor</name>
+		<tag-class>net.fckeditor.tags.EditorTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>
+				The unique instance name under which the editor can be
+				retrieved through the API.
+			</description>
+			<name>instanceName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>
+				The name of the underlying input element. If not passed, field
+				will be reset to instanceName.
+			</description>
+			<name>inputName</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>
+				Width of the FCKeditor instance in the browser window.
+			</description>
+			<name>width</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>
+				Height of the FCKeditor instance in the browser window.
+			</description>
+			<name>height</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>
+				The toolbar set which shall be displayed to the user.
+			</description>
+			<name>toolbarSet</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>
+				The path/folder in which the editor is deployed under
+				the given context (e.g. '/fckeditor'). The context path will be
+				attached automatically.
+			</description>
+			<name>basePath</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>
+				Passes any content as-is to the FCKeditor document. Use the
+				jsp:attribute tag for large inline content.
+			</description>
+			<name>value</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<example><![CDATA[
+<FCK:editor instanceName="editorDefault" height="500px" />]]>
+		</example>
+	</tag>
+	<tag>
+		<description>
+			Sets a config property of the editor to the supplied value.
+			You may provide any attribute you want for the editor. Set
+			at least one attribute per tag or several attributes with
+			one tag. This tag can only be nested within an editor tag.
+			For all configuration options click
+			<![CDATA[<a href="http://docs.fckeditor.net/FCKeditor_2.x/Developers_Guide/Configuration/Configuration_Options">here</a>]]>.
+		</description>
+		<display-name>config</display-name>
+		<name>config</name>
+		<tag-class>net.fckeditor.tags.ConfigTag</tag-class>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<example>
+			<![CDATA[
+<FCK:config SkinPath="/skins/silver/" AutoDetectLanguage="true" />]]>
+		</example>
+	</tag>
+	<tag>
+		<description>
+			Displays session-dependent and compatibility-related
+			information. The messages can be localized.
+		</description>
+		<display-name>check</display-name>
+		<name>check</name>
+		<tag-class>net.fckeditor.tags.CheckTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<description>
+				Provide the feature name you want to check. Valid
+				features are [FileUpload, GetResources, CompatibleBrowser, 
+				CreateFolder]
+			</description>
+			<name>command</name>
+			<required>true</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<example><![CDATA[
+<FCK:check command="FileUpload" />
+<FCK:check command="CompatibleBrowser" />]]>
+		</example>
+	</tag>
+ </taglib>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="MemberGroup">
+
+	<resultMap id="RM.MemberGroup" type="com.dqs.biz.model.MemberGroup">
+        <result property="id" column="ID"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="groupId" column="GROUP_ID"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="MemberGroup.columns">
+	    <![CDATA[
+		ID,MEMBER_ID,GROUP_ID
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="MemberGroup.insert" >
+    <![CDATA[
+        INSERT INTO T_MEMBER_GROUP (
+        	ID ,
+        	MEMBER_ID ,
+        	GROUP_ID 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{memberId,jdbcType=DECIMAL} ,
+        	#{groupId,jdbcType=DECIMAL} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_MEMBER_GROUP.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="MemberGroup.update" >
+    <![CDATA[
+        UPDATE T_MEMBER_GROUP SET
+	        MEMBER_ID = #{memberId,jdbcType=DECIMAL} ,
+	        GROUP_ID = #{groupId,jdbcType=DECIMAL} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="MemberGroup.delete">
+    <![CDATA[
+        DELETE FROM T_MEMBER_GROUP WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="MemberGroup.getById" resultMap="RM.MemberGroup">
+		SELECT <include refid="MemberGroup.columns" />
+	    <![CDATA[
+		    FROM T_MEMBER_GROUP 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="MemberGroup.findAll" resultMap="RM.MemberGroup">
+		SELECT <include refid="MemberGroup.columns" />
+	    <![CDATA[
+		    FROM T_MEMBER_GROUP 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="MemberGroup.baseCode" resultMap="RM.MemberGroup">
+		SELECT <include refid="MemberGroup.columns" />
+	    <![CDATA[
+		    FROM T_MEMBER_GROUP 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="MemberGroup.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(memberId)">
+				AND MEMBER_ID = #{memberId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(groupId)">
+				AND GROUP_ID = #{groupId}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="MemberGroup.findPage.count" resultType="long">
+        SELECT count(*) FROM T_MEMBER_GROUP 
+		<include refid="MemberGroup.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="MemberGroup.findPage" resultMap="RM.MemberGroup">
+    	SELECT <include refid="MemberGroup.columns" />
+	    FROM T_MEMBER_GROUP 
+		<include refid="MemberGroup.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+<!-- 根据救援队员ID删除组信息 -->
+<delete id="MemberGroup.removeByMemberId">
+    <![CDATA[
+        DELETE FROM T_MEMBER_GROUP WHERE
+        MEMBER_ID = #{memberId} 
+    ]]>
+    </delete>
+<!-- 根据救援队员ID查找所有组信息 -->
+<select id="MemberGroup.getGroupsByMemberId" resultMap="RM.MemberGroup">
+		SELECT <include refid="MemberGroup.columns" />
+	    <![CDATA[
+		    FROM T_MEMBER_GROUP 
+		    WHERE MEMBER_ID = #{id}
+	    ]]>
+	</select>
+</mapper>
+

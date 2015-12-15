@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="Report">
+	 <select id="Report.getEmergencyPlanCount" parameterType="hashMap" resultType="hashmap">
+		<![CDATA[
+		SELECT ET.TYPE_NAME NAME,
+               (select count(*) from T_EMERGENCY_PLAN  E  WHERE   E.PLAN_TYPE_ID = ET.ID ) amount
+	    FROM 
+	       T_EMERGENCY_PLAN_TYPE ET
+	    ]]>
+	</select>
+	<select id="Report.getEmergencyPlanStatusCount" parameterType="hashMap" resultType="hashmap">
+		<![CDATA[
+		SELECT ES.NAME NAME,
+               (SELECT COUNT(*) FROM  T_EMERGENCY_PLAN  E   WHERE   E.STATUS = ES.ID ) amount
+	    FROM 
+	       T_DOCUMENT_STATUS ES
+	    ]]>
+	</select>
+	<!-- 标准工作程序类型统计 -->
+	<select id="Report.getStandardworkTypeCount" parameterType="hashMap" resultType="hashmap">
+		<![CDATA[
+		SELECT WT.TYPE_NAME NAME,
+		       (SELECT COUNT(*) FROM T_STANDARD_WORK  W WHERE W.TYPE = WT.ID) amount
+	    FROM 
+	       T_STANDARD_WORK_TYPE WT
+	    ]]>
+	</select>
+	<!-- 标准工作程序状态统计 -->
+	<select id="Report.getStandardworkStatusCount" parameterType="hashMap" resultType="hashmap">
+		<![CDATA[
+		SELECT ES.NAME NAME,
+               (SELECT COUNT(*) FROM  T_STANDARD_WORK  E   WHERE   E.STATUS = ES.ID ) amount
+	    FROM 
+	       T_DOCUMENT_STATUS ES
+	    ]]>
+	</select>
+	<!-- 救援队类型统计 -->
+	<select id="Report.getRescueTeamTypeCount" parameterType="hashMap" resultType="hashmap">
+		<![CDATA[
+		SELECT TT.NAME NAME,
+               (SELECT COUNT(*) FROM  T_RESCUE_TEAM  T   WHERE   T.TEAM_TYPE_ID = TT.ID ) amount
+	    FROM 
+	       T_TEAM_TYPE TT
+	    ]]>
+	</select>
+	<!-- 救援装备类型统计 -->
+	<select id="Report.getRescueEquipmentTypeCount" parameterType="hashMap" resultType="hashmap">
+		<![CDATA[
+		SELECT T.TYPE_NAME NAME,SUM(E.AMOUNT) amount
+	    FROM 
+	       T_RESCUE_EQUIPMENT E,
+	       T_EQUIPMENT_TYPE T
+	    WHERE E.TYPE_ID = T.ID 
+	    GROUP BY T.TYPE_NAME 
+	    ]]>
+	</select>
+</mapper>
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+ 
+  	<!-- 系统管理部分 -->
+    <package name="system" namespace="/system" extends="custom-default">
+		<action name="*/*" method="{2}" class="com.steven.core.action.{1}Action">
+		    <result name="list" >/system/{1}/list.jsp</result>
+		    <result name="create" >/system/{1}/create.jsp</result>
+		    <result name="edit" >/system/{1}/edit.jsp</result>
+		    <result name="show" >/system/{1}/show.jsp</result>
+		    <result name="list_action" type="redirect">/system/{1}/list.do</result>
+		    <!-- json result -->
+		    <result name="jsonPageList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult</param>
+		    </result>
+		    <result name="jsonList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult.result</param>
+		    </result>
+		    <result name="treeList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult.result</param>
+		    </result>
+		    <result name="jsonResult" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult</param>
+		    </result>
+		</action>
+    </package>
+</struts>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="RescueMemberDetailinfo">
+
+	<resultMap id="RM.RescueMemberDetailinfo" type="com.dqs.biz.model.RescueMemberDetailinfo">
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="fitness" column="FITNESS"/>
+        <result property="abilityMedical" column="ABILITY_MEDICAL"/>
+        <result property="abilityGps" column="ABILITY_GPS"/>
+        <result property="abilityTransport" column="ABILITY_TRANSPORT"/>
+        <result property="abilityOther" column="ABILITY_OTHER"/>
+        <result property="rescueExperience" column="RESCUE_EXPERIENCE"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="RescueMemberDetailinfo.columns">
+	    <![CDATA[
+		MEMBER_ID,FITNESS,ABILITY_MEDICAL,ABILITY_GPS,ABILITY_TRANSPORT,ABILITY_OTHER,RESCUE_EXPERIENCE
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="RescueMemberDetailinfo.insert" >
+    <![CDATA[
+        INSERT INTO T_RESCUE_MEMBER_DETAILINFO (
+        	MEMBER_ID ,
+        	FITNESS ,
+        	ABILITY_MEDICAL ,
+        	ABILITY_GPS ,
+        	ABILITY_TRANSPORT ,
+        	ABILITY_OTHER ,
+        	RESCUE_EXPERIENCE 
+        ) VALUES (
+        	#{memberId,jdbcType=DECIMAL} ,
+        	#{fitness,jdbcType=VARCHAR} ,
+        	#{abilityMedical,jdbcType=VARCHAR} ,
+        	#{abilityGps,jdbcType=VARCHAR} ,
+        	#{abilityTransport,jdbcType=VARCHAR} ,
+        	#{abilityOther,jdbcType=VARCHAR} ,
+        	#{rescueExperience,jdbcType=VARCHAR} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="memberId">
+			SELECT S_T_RESCUE_MEMBER_DETAILINFO.nextval  FROM DUAL 
+        </selectKey>
+        -->
+	</insert>
+    
+	<update id="RescueMemberDetailinfo.update" >
+    <![CDATA[
+        UPDATE T_RESCUE_MEMBER_DETAILINFO SET
+	        FITNESS = #{fitness,jdbcType=VARCHAR} ,
+	        ABILITY_MEDICAL = #{abilityMedical,jdbcType=VARCHAR} ,
+	        ABILITY_GPS = #{abilityGps,jdbcType=VARCHAR} ,
+	        ABILITY_TRANSPORT = #{abilityTransport,jdbcType=VARCHAR} ,
+	        ABILITY_OTHER = #{abilityOther,jdbcType=VARCHAR} ,
+	        RESCUE_EXPERIENCE = #{rescueExperience,jdbcType=VARCHAR} 
+        WHERE 
+	        MEMBER_ID = #{memberId} 
+    ]]>
+	</update>
+
+    <delete id="RescueMemberDetailinfo.delete">
+    <![CDATA[
+        DELETE FROM T_RESCUE_MEMBER_DETAILINFO WHERE
+        MEMBER_ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="RescueMemberDetailinfo.getById" resultMap="RM.RescueMemberDetailinfo">
+		SELECT <include refid="RescueMemberDetailinfo.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_MEMBER_DETAILINFO 
+	        WHERE 
+		        MEMBER_ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="RescueMemberDetailinfo.findAll" resultMap="RM.RescueMemberDetailinfo">
+		SELECT <include refid="RescueMemberDetailinfo.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_MEMBER_DETAILINFO 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="RescueMemberDetailinfo.baseCode" resultMap="RM.RescueMemberDetailinfo">
+		SELECT <include refid="RescueMemberDetailinfo.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_MEMBER_DETAILINFO 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="RescueMemberDetailinfo.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(memberId)">
+				AND MEMBER_ID = #{memberId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(fitness)">
+				AND FITNESS = #{fitness}
+			</if>
+	       <if test="@Ognl@isNotEmpty(abilityMedical)">
+				AND ABILITY_MEDICAL = #{abilityMedical}
+			</if>
+	       <if test="@Ognl@isNotEmpty(abilityGps)">
+				AND ABILITY_GPS = #{abilityGps}
+			</if>
+	       <if test="@Ognl@isNotEmpty(abilityTransport)">
+				AND ABILITY_TRANSPORT = #{abilityTransport}
+			</if>
+	       <if test="@Ognl@isNotEmpty(abilityOther)">
+				AND ABILITY_OTHER = #{abilityOther}
+			</if>
+	       <if test="@Ognl@isNotEmpty(rescueExperience)">
+				AND RESCUE_EXPERIENCE = #{rescueExperience}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="RescueMemberDetailinfo.findPage.count" resultType="long">
+        SELECT count(*) FROM T_RESCUE_MEMBER_DETAILINFO 
+		<include refid="RescueMemberDetailinfo.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="RescueMemberDetailinfo.findPage" resultMap="RM.RescueMemberDetailinfo">
+    	SELECT <include refid="RescueMemberDetailinfo.columns" />
+	    FROM T_RESCUE_MEMBER_DETAILINFO 
+		<include refid="RescueMemberDetailinfo.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+	
+</mapper>
+

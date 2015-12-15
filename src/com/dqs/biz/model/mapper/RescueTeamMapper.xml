@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="RescueTeam">
+
+	<resultMap id="RM.RescueTeam" type="com.dqs.biz.model.RescueTeam">
+        <result property="id" column="ID"/>
+        <result property="teamName" column="TEAM_NAME"/>
+        <result property="teamTypeId" column="TEAM_TYPE_ID"/>
+        <result property="provinceId" column="PROVINCE_ID"/>
+        <result property="cityId" column="CITY_ID"/>
+        <result property="districtId" column="DISTRICT_ID"/>
+        <result property="headDepartment" column="HEAD_DEPARTMENT"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="telphone" column="TELPHONE"/>
+        <result property="fax" column="FAX"/>
+        <result property="master" column="MASTER"/>
+        <result property="masterTelphone" column="MASTER_TELPHONE"/>
+        <result property="setupTime" column="SETUP_TIME"/>
+        <result property="memberAmount" column="MEMBER_AMOUNT"/>
+        <result property="equipmentAmount" column="EQUIPMENT_AMOUNT"/>
+        <result property="majorEquipment" column="MAJOR_EQUIPMENT"/>
+        <result property="majorAbility" column="MAJOR_ABILITY"/>
+        <result property="teamLevel" column="TEAM_LEVEL"/>
+        <result property="fcu" column="FCU"/>
+        <result property="fcd" column="FCD"/>
+        <result property="lcu" column="LCU"/>
+        <result property="lcd" column="LCD"/>
+        <association property="province" column="PROVINCE_ID" select="Region.getById"/>
+        <association property="city" column="CITY_ID" select="Region.getById"/>
+        <association property="district" column="DISTRICT_ID" select="Region.getById"/>
+        <association property="teamType" column="TEAM_TYPE_ID" select="TeamType.getById"/>
+        <collection property="teamAbilitys" column="ID" javaType="java.util.HashSet" ofType="com.dqs.biz.model.TeamAbility" select="TeamAbility.getAbilitysByTeamId"/>
+        
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="RescueTeam.columns">
+	    <![CDATA[
+		ID,TEAM_NAME,TEAM_TYPE_ID,PROVINCE_ID,CITY_ID,DISTRICT_ID,HEAD_DEPARTMENT,ADDRESS,TELPHONE,FAX,MASTER,MASTER_TELPHONE,SETUP_TIME,MEMBER_AMOUNT,EQUIPMENT_AMOUNT,MAJOR_EQUIPMENT,MAJOR_ABILITY,TEAM_LEVEL,FCU,FCD,LCU,LCD
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="RescueTeam.insert" >
+    <![CDATA[
+        INSERT INTO T_RESCUE_TEAM (
+        	ID ,
+        	TEAM_NAME ,
+        	TEAM_TYPE_ID ,
+        	PROVINCE_ID ,
+        	CITY_ID ,
+        	DISTRICT_ID ,
+        	HEAD_DEPARTMENT ,
+        	ADDRESS ,
+        	TELPHONE ,
+        	FAX ,
+        	MASTER ,
+        	MASTER_TELPHONE ,
+        	SETUP_TIME ,
+        	MEMBER_AMOUNT ,
+        	EQUIPMENT_AMOUNT ,
+        	MAJOR_EQUIPMENT ,
+        	MAJOR_ABILITY ,
+        	TEAM_LEVEL ,
+        	FCU ,
+        	FCD ,
+        	LCU ,
+        	LCD 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{teamName,jdbcType=VARCHAR} ,
+        	#{teamTypeId,jdbcType=DECIMAL} ,
+        	#{provinceId,jdbcType=DECIMAL} ,
+        	#{cityId,jdbcType=DECIMAL} ,
+        	#{districtId,jdbcType=DECIMAL} ,
+        	#{headDepartment,jdbcType=VARCHAR} ,
+        	#{address,jdbcType=VARCHAR} ,
+        	#{telphone,jdbcType=VARCHAR} ,
+        	#{fax,jdbcType=VARCHAR} ,
+        	#{master,jdbcType=VARCHAR} ,
+        	#{masterTelphone,jdbcType=VARCHAR} ,
+        	#{setupTime,jdbcType=TIMESTAMP} ,
+        	#{memberAmount,jdbcType=DECIMAL} ,
+        	#{equipmentAmount,jdbcType=DECIMAL} ,
+        	#{majorEquipment,jdbcType=VARCHAR} ,
+        	#{majorAbility,jdbcType=VARCHAR} ,
+        	#{teamLevel,jdbcType=DECIMAL} ,
+        	#{fcu,jdbcType=DECIMAL} ,
+        	#{fcd,jdbcType=TIMESTAMP} ,
+        	#{lcu,jdbcType=DECIMAL} ,
+        	#{lcd,jdbcType=TIMESTAMP} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_RESCUE_TEAM.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="RescueTeam.update" >
+    <![CDATA[
+        UPDATE T_RESCUE_TEAM SET
+	        TEAM_NAME = #{teamName,jdbcType=VARCHAR} ,
+	        TEAM_TYPE_ID = #{teamTypeId,jdbcType=DECIMAL} ,
+	        PROVINCE_ID = #{provinceId,jdbcType=DECIMAL} ,
+	        CITY_ID = #{cityId,jdbcType=DECIMAL} ,
+	        DISTRICT_ID = #{districtId,jdbcType=DECIMAL} ,
+	        HEAD_DEPARTMENT = #{headDepartment,jdbcType=VARCHAR} ,
+	        ADDRESS = #{address,jdbcType=VARCHAR} ,
+	        TELPHONE = #{telphone,jdbcType=VARCHAR} ,
+	        FAX = #{fax,jdbcType=VARCHAR} ,
+	        MASTER = #{master,jdbcType=VARCHAR} ,
+	        MASTER_TELPHONE = #{masterTelphone,jdbcType=VARCHAR} ,
+	        SETUP_TIME = #{setupTime,jdbcType=TIMESTAMP} ,
+	        MEMBER_AMOUNT = #{memberAmount,jdbcType=DECIMAL} ,
+	        EQUIPMENT_AMOUNT = #{equipmentAmount,jdbcType=DECIMAL} ,
+	        MAJOR_EQUIPMENT = #{majorEquipment,jdbcType=VARCHAR} ,
+	        MAJOR_ABILITY = #{majorAbility,jdbcType=VARCHAR} ,
+	        TEAM_LEVEL = #{teamLevel,jdbcType=DECIMAL} ,
+	        FCU = #{fcu,jdbcType=DECIMAL} ,
+	        FCD = #{fcd,jdbcType=TIMESTAMP} ,
+	        LCU = #{lcu,jdbcType=DECIMAL} ,
+	        LCD = #{lcd,jdbcType=TIMESTAMP} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="RescueTeam.delete">
+    <![CDATA[
+        DELETE FROM T_RESCUE_TEAM WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="RescueTeam.getById" resultMap="RM.RescueTeam">
+		SELECT <include refid="RescueTeam.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_TEAM 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="RescueTeam.findAll" resultMap="RM.RescueTeam">
+		SELECT <include refid="RescueTeam.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_TEAM 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="RescueTeam.baseCode" resultMap="RM.RescueTeam">
+		SELECT <include refid="RescueTeam.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_TEAM 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="RescueTeam.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(teamName)">
+				AND TEAM_NAME like '%'||#{teamName}||'%' 
+			</if>
+	       <if test="@Ognl@isNotEmpty(teamTypeId)">
+				AND TEAM_TYPE_ID = #{teamTypeId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(provinceId)">
+				AND PROVINCE_ID = #{provinceId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(cityId)">
+				AND CITY_ID = #{cityId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(districtId)">
+				AND DISTRICT_ID = #{districtId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(headDepartment)">
+				AND HEAD_DEPARTMENT like '%'||#{headDepartment}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(address)">
+				AND ADDRESS like '%'||#{address}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(telphone)">
+				AND TELPHONE = #{telphone}
+			</if>
+	       <if test="@Ognl@isNotEmpty(fax)">
+				AND FAX = #{fax}
+			</if>
+	       <if test="@Ognl@isNotEmpty(master)">
+				AND MASTER = #{master}
+			</if>
+	       <if test="@Ognl@isNotEmpty(masterTelphone)">
+				AND MASTER_TELPHONE = #{masterTelphone}
+			</if>
+	       <if test="@Ognl@isNotEmpty(setupTimeBegin)">
+				AND SETUP_TIME >= #{setupTimeBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(setupTimeEnd)">
+				AND SETUP_TIME &lt;= #{setupTimeEnd}
+		   </if>
+	       <if test="@Ognl@isNotEmpty(memberAmount)">
+				AND MEMBER_AMOUNT = #{memberAmount}
+			</if>
+	       <if test="@Ognl@isNotEmpty(equipmentAmount)">
+				AND EQUIPMENT_AMOUNT = #{equipmentAmount}
+			</if>
+	       <if test="@Ognl@isNotEmpty(majorEquipment)">
+				AND MAJOR_EQUIPMENT = #{majorEquipment}
+			</if>
+	       <if test="@Ognl@isNotEmpty(majorAbility)">
+				AND MAJOR_ABILITY = #{majorAbility}
+			</if>
+	       <if test="@Ognl@isNotEmpty(teamLevel)">
+				AND TEAM_LEVEL = #{teamLevel}
+			</if>
+			   <if test="@Ognl@isNotEmpty(fcu)">
+				AND FCU = #{fcu}
+			</if>
+	       <if test="@Ognl@isNotEmpty(fcdBegin)">
+				AND FCD >= #{fcdBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(fcdEnd)">
+				AND FCD &lt;= #{fcdEnd}
+		   </if>
+	       <if test="@Ognl@isNotEmpty(lcu)">
+				AND LCU = #{lcu}
+			</if>
+	       <if test="@Ognl@isNotEmpty(lcdBegin)">
+				AND LCD >= #{lcdBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(lcdEnd)">
+				AND LCD &lt;= #{lcdEnd}
+		   </if>
+		</where>
+	</sql>
+		
+    <select id="RescueTeam.findPage.count" resultType="long">
+        SELECT count(*) FROM T_RESCUE_TEAM 
+		<include refid="RescueTeam.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="RescueTeam.findPage" resultMap="RM.RescueTeam">
+    	SELECT <include refid="RescueTeam.columns" />
+	    FROM T_RESCUE_TEAM 
+		<include refid="RescueTeam.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+    <select id="RescueTeam.getByTeamName" resultMap="RM.RescueTeam" parameterType="java.lang.String">
+	    SELECT <include refid="RescueTeam.columns"/>
+	    <![CDATA[
+	        FROM T_RESCUE_TEAM where TEAM_NAME = #{teamName}
+	    ]]>
+    </select>
+    
+	
+</mapper>
+

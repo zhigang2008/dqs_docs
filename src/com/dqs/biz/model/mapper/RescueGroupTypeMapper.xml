@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="RescueGroupType">
+
+	<resultMap id="RM.RescueGroupType" type="com.dqs.biz.model.RescueGroupType">
+        <result property="id" column="ID"/>
+        <result property="groupName" column="GROUP_NAME"/>
+        <result property="groupFunction" column="GROUP_FUNCTION"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="RescueGroupType.columns">
+	    <![CDATA[
+		ID,GROUP_NAME,GROUP_FUNCTION
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="RescueGroupType.insert" >
+    <![CDATA[
+        INSERT INTO T_RESCUE_GROUP_TYPE (
+        	ID ,
+        	GROUP_NAME ,
+        	GROUP_FUNCTION 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{groupName,jdbcType=VARCHAR} ,
+        	#{groupFunction,jdbcType=VARCHAR} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_RESCUE_GROUP_TYPE.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="RescueGroupType.update" >
+    <![CDATA[
+        UPDATE T_RESCUE_GROUP_TYPE SET
+	        GROUP_NAME = #{groupName,jdbcType=VARCHAR} ,
+	        GROUP_FUNCTION = #{groupFunction,jdbcType=VARCHAR} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="RescueGroupType.delete">
+    <![CDATA[
+        DELETE FROM T_RESCUE_GROUP_TYPE WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="RescueGroupType.getById" resultMap="RM.RescueGroupType">
+		SELECT <include refid="RescueGroupType.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_GROUP_TYPE 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="RescueGroupType.findAll" resultMap="RM.RescueGroupType">
+		SELECT <include refid="RescueGroupType.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_GROUP_TYPE 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="RescueGroupType.baseCode" resultMap="RM.RescueGroupType">
+		SELECT <include refid="RescueGroupType.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_GROUP_TYPE 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="RescueGroupType.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(groupName)">
+				AND GROUP_NAME = #{groupName}
+			</if>
+	       <if test="@Ognl@isNotEmpty(groupFunction)">
+				AND GROUP_FUNCTION = #{groupFunction}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="RescueGroupType.findPage.count" resultType="long">
+        SELECT count(*) FROM T_RESCUE_GROUP_TYPE 
+		<include refid="RescueGroupType.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="RescueGroupType.findPage" resultMap="RM.RescueGroupType">
+    	SELECT <include refid="RescueGroupType.columns" />
+	    FROM T_RESCUE_GROUP_TYPE 
+		<include refid="RescueGroupType.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+	
+</mapper>
+

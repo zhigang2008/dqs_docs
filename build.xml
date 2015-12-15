@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="${project.name}" basedir="." default="client-zip">
+	<!-- =================================================================== -->
+	<!-- 设置系统变量 -->
+	<!-- =================================================================== -->
+	<property environment="env" />
+	<property file="build.properties" />
+
+	<!-- 主要的lib path -->
+	<path id="master-classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="e:\tomcat6\lib">
+		 <include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="generate-time">
+		<!-- 本次构建的时间戳 -->
+		<tstamp prefix="Build.">
+			<format property="time" pattern="yyyy-MM-dd HH:mm:ss"/>
+		</tstamp>
+	</target>
+
+
+	<!-- 清空所有代码目录以及临时目录 -->
+	<target name="clean-all" description="清空所有输出文件包括build和部署目录">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+
+	<!-- ************ client端 **************** -->
+	<target name="client-init" depends="generate-time" description="创建目录">
+		<mkdir dir="${build.client.dir}" />
+		<mkdir dir="${deploy.client.dir}/javadocs" />
+	</target>
+
+	<target name="client-compile"  depends="client-init" description="编译client Java文件">
+		<javac destdir="${build.client.dir}" debug="on" deprecation="false" failonerror="true" target="1.6" encoding="utf-8">
+			<src path="${src.java.dir}" />
+			  <include name="Ognl.java"/>
+			  <include name="com/steven/**/*.java" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+
+	<!-- client jar -->
+	<target name="client-jar" depends="client-compile" description="创建client jar">
+		<!--copy tag file-->
+		<copy todir="${build.client.dir}/META-INF">
+			<fileset dir="${web.dir}/WEB-INF/tags">
+				<include name="mstag.tld"/>
+			</fileset>
+		</copy>
+		<jar destfile="${build.dir}/${project.client.name}.jar">
+			<fileset dir="${build.client.dir}"/>
+			<manifest>
+				<attribute name="version" value="${build.client.version}" />
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Time" value="${Build.time}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="client-build" depends="client-jar" description="整理client发布内容">
+		<!--copy 类库-->
+		<copy todir="${deploy.client.dir}">
+			<fileset dir="${build.dir}">
+				<include name="${project.client.name}.jar"/>
+			</fileset>
+		</copy>
+		<!--编译客户端API-->
+		<javadoc
+			           destdir="${deploy.client.dir}/javadocs"
+			  	       Encoding="utf-8" 
+			  	       charset="utf-8" 
+			  	       docencoding="utf-8" 
+			           author="true"
+			           version="true"
+			           use="true" 
+			  	       Locale="zh_CN"
+			  	       access="protected" 
+			           windowtitle="BASE SDK API">
+  		        <fileset dir="${src.java.dir}" defaultexcludes="yes">
+  		        	<include name="Ognl.java"/>
+  		        	<include name="com/dqs/**/*.java"/>
+  		        	<include name="com/steven/Constants.java"/>
+			        <include name="com/steven/core/**/*.java"/>
+  		        	<include name="com/steven/front/**/*.java"/>
+			        <include name="com/steven/member/**/*.java"/>
+			        <include name="com/steven/util/**/*.java"/>
+  		        	<include name="com/steven/framework/base/**/*.java"/>
+  		        	<include name="com/steven/framework/common/**/*.java"/>
+  		        	<include name="com/steven/framework/tag/**/*.java"/>
+  		        	<include name="com/steven/framework/core/page/**/*.java"/>
+			    </fileset>
+			    <doctitle><![CDATA[<h1>BASE SDK</h1>]]></doctitle>
+			    <bottom><![CDATA[<i>Copyright &#169; 2011 Steven. All Rights Reserved.</i>]]></bottom>
+			    
+			  	<classpath refid="master-classpath" />
+			  </javadoc>
+	</target>
+	<!--创建client zip发布包-->
+	<target name="client-zip" depends="client-build">
+		<zip destfile="${dist.dir}/${project.client.name}.zip">
+			<fileset dir="${deploy.client.dir}"/>
+		</zip>
+	</target>
+
+</project>

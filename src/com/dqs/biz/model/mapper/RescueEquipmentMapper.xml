@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="RescueEquipment">
+
+	<resultMap id="RM.RescueEquipment" type="com.dqs.biz.model.RescueEquipment">
+        <result property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="typeId" column="TYPE_ID"/>
+        <result property="amount" column="AMOUNT"/>
+        <result property="status" column="STATUS"/>
+        <result property="productLocation" column="PRODUCT_LOCATION"/>
+        <result property="productTime" column="PRODUCT_TIME"/>
+        <result property="buyTime" column="BUY_TIME"/>
+        <result property="price" column="PRICE"/>
+        <result property="fcu" column="FCU"/>
+        <result property="fcd" column="FCD"/>
+        <result property="lcu" column="LCU"/>
+        <result property="lcd" column="LCD"/>
+        <association property="equipmentType" column="TYPE_ID" select="EquipmentType.getById"/>
+        <association property="equipmentStatus" column="STATUS" select="EquipmentStatus.getById"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="RescueEquipment.columns">
+	    <![CDATA[
+		ID,NAME,TYPE_ID,AMOUNT,STATUS,PRODUCT_LOCATION,PRODUCT_TIME,BUY_TIME,PRICE,FCU,FCD,LCU,LCD
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="RescueEquipment.insert" >
+    <![CDATA[
+        INSERT INTO T_RESCUE_EQUIPMENT (
+        	ID ,
+        	NAME ,
+        	TYPE_ID ,
+        	AMOUNT ,
+        	STATUS ,
+        	PRODUCT_LOCATION ,
+        	PRODUCT_TIME ,
+        	BUY_TIME ,
+        	PRICE ,
+        	FCU ,
+        	FCD ,
+        	LCU ,
+        	LCD 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{name,jdbcType=VARCHAR} ,
+        	#{typeId,jdbcType=DECIMAL} ,
+        	#{amount,jdbcType=DECIMAL} ,
+        	#{status,jdbcType=DECIMAL} ,
+        	#{productLocation,jdbcType=VARCHAR} ,
+        	#{productTime,jdbcType=TIMESTAMP} ,
+        	#{buyTime,jdbcType=TIMESTAMP} ,
+        	#{price,jdbcType=DECIMAL} ,
+        	#{fcu,jdbcType=DECIMAL} ,
+        	#{fcd,jdbcType=TIMESTAMP} ,
+        	#{lcu,jdbcType=DECIMAL} ,
+        	#{lcd,jdbcType=TIMESTAMP} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_RESCUE_EQUIPMENT.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="RescueEquipment.update" >
+    <![CDATA[
+        UPDATE T_RESCUE_EQUIPMENT SET
+	        NAME = #{name,jdbcType=VARCHAR} ,
+	        TYPE_ID = #{typeId,jdbcType=DECIMAL} ,
+	        AMOUNT = #{amount,jdbcType=DECIMAL} ,
+	        STATUS = #{status,jdbcType=DECIMAL} ,
+	        PRODUCT_LOCATION = #{productLocation,jdbcType=VARCHAR} ,
+	        PRODUCT_TIME = #{productTime,jdbcType=TIMESTAMP} ,
+	        BUY_TIME = #{buyTime,jdbcType=TIMESTAMP} ,
+	        PRICE = #{price,jdbcType=DECIMAL} ,
+	        FCU = #{fcu,jdbcType=DECIMAL} ,
+	        FCD = #{fcd,jdbcType=TIMESTAMP} ,
+	        LCU = #{lcu,jdbcType=DECIMAL} ,
+	        LCD = #{lcd,jdbcType=TIMESTAMP} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="RescueEquipment.delete">
+    <![CDATA[
+        DELETE FROM T_RESCUE_EQUIPMENT WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="RescueEquipment.getById" resultMap="RM.RescueEquipment">
+		SELECT <include refid="RescueEquipment.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_EQUIPMENT 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="RescueEquipment.findAll" resultMap="RM.RescueEquipment">
+		SELECT <include refid="RescueEquipment.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_EQUIPMENT 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="RescueEquipment.baseCode" resultMap="RM.RescueEquipment">
+		SELECT <include refid="RescueEquipment.columns" />
+	    <![CDATA[
+		    FROM T_RESCUE_EQUIPMENT 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="RescueEquipment.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(name)">
+				AND NAME like '%'||#{name}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(typeId)">
+				AND TYPE_ID = #{typeId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(amount)">
+				AND AMOUNT = #{amount}
+			</if>
+	       <if test="@Ognl@isNotEmpty(status)">
+				AND STATUS = #{status}
+			</if>
+	       <if test="@Ognl@isNotEmpty(productLocation)">
+				AND PRODUCT_LOCATION = #{productLocation}
+			</if>
+	       <if test="@Ognl@isNotEmpty(productTimeBegin)">
+				AND PRODUCT_TIME >= #{productTimeBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(productTimeEnd)">
+				AND PRODUCT_TIME &lt;= #{productTimeEnd}
+		   </if>
+	       <if test="@Ognl@isNotEmpty(buyTimeBegin)">
+				AND BUY_TIME >= #{buyTimeBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(buyTimeEnd)">
+				AND BUY_TIME &lt;= #{buyTimeEnd}
+		   </if>
+	       <if test="@Ognl@isNotEmpty(price)">
+				AND PRICE = #{price}
+			</if>
+			   <if test="@Ognl@isNotEmpty(fcu)">
+				AND FCU = #{fcu}
+			</if>
+	       <if test="@Ognl@isNotEmpty(fcdBegin)">
+				AND FCD >= #{fcdBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(fcdEnd)">
+				AND FCD &lt;= #{fcdEnd}
+		   </if>
+	       <if test="@Ognl@isNotEmpty(lcu)">
+				AND LCU = #{lcu}
+			</if>
+	       <if test="@Ognl@isNotEmpty(lcdBegin)">
+				AND LCD >= #{lcdBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(lcdEnd)">
+				AND LCD &lt;= #{lcdEnd}
+		   </if>
+		</where>
+	</sql>
+		
+    <select id="RescueEquipment.findPage.count" resultType="long">
+        SELECT count(*) FROM T_RESCUE_EQUIPMENT 
+		<include refid="RescueEquipment.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="RescueEquipment.findPage" resultMap="RM.RescueEquipment">
+    	SELECT <include refid="RescueEquipment.columns" />
+	    FROM T_RESCUE_EQUIPMENT 
+		<include refid="RescueEquipment.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+	
+</mapper>
+

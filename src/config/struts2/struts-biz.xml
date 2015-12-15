@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <!-- 远程校验 -->
+	<package name="remoteCheck" namespace="/remoteCheck" extends="custom-default">
+	  <global-results>
+			<result name="checkResult" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">inputStream</param>
+				<param name="allowCaching">false</param>
+			</result>
+		</global-results>
+        <!-- 用户校验 -->
+		<action name="User/checkExistUser" method="checkExistUser" class="com.steven.core.action.UserAction">
+		</action>
+	</package>
+		 
+  	<!-- 具体业务部分-应急方案及标准文档,信息发布等 -->
+    <package name="office" namespace="/office" extends="custom-default">
+       <global-results>
+        <!-- json result -->
+		     <result name="jsonPageList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult</param>
+		    </result>
+		    <result name="jsonList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult.result</param>
+		    </result>
+		    <result name="treeList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult.result</param>
+		    </result>
+		    <result name="jsonResult" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult</param>
+		    </result>
+       </global-results>
+
+		<action name="*/*" method="{2}" class="com.dqs.office.action.{1}Action">
+		    <result name="list" >/office/{1}/list.jsp</result>
+		    <result name="create" >/office/{1}/create.jsp</result>
+		    <result name="edit" >/office/{1}/edit.jsp</result>
+		    <result name="show" >/office/{1}/show.jsp</result>
+		    <result name="list_action" type="redirect">/office/{1}/list.do</result>
+		    <!-- 增加提交者和审核者页面 -->
+		    <result name="list4submitter" >/office/{1}/list4submitter.jsp</result>
+		    <result name="create4submitter" >/office/{1}/create4submitter.jsp</result>
+		    <result name="edit4submitter" >/office/{1}/edit4submitter.jsp</result>
+		    <result name="show4submitter" >/office/{1}/show4submitter.jsp</result>
+		    <result name="listAction4submitter" type="redirect">/office/{1}/list4submitter.do</result>
+		    <result name="list4view" >/office/{1}/list4view.jsp</result>
+		    <result name="list4review" >/office/{1}/list4review.jsp</result>
+		    <result name="review" >/office/{1}/review.jsp</result>
+		</action>			
+    </package>
+    
+        <!-- 救援队相关 -->
+        <package name="biz" namespace="/biz" extends="custom-default">
+       <global-results>
+        <!-- json result -->
+		     <result name="jsonPageList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult</param>
+		    </result>
+		    <result name="jsonList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult.result</param>
+		    </result>
+		    <result name="treeList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult.result</param>
+		    </result>
+		    <result name="jsonResult" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult</param>
+		    </result>
+       </global-results>
+
+		<action name="*/*" method="{2}" class="com.dqs.biz.action.{1}Action">
+		    <result name="list" >/biz/{1}/list.jsp</result>
+		    <result name="create" >/biz/{1}/create.jsp</result>
+		    <result name="edit" >/biz/{1}/edit.jsp</result>
+		    <result name="show" >/biz/{1}/show.jsp</result>
+		    <result name="list_action" type="redirect">/biz/{1}/list.do</result>
+		   
+		</action>			
+    </package>
+    
+    <!-- 前端展示 -->
+     <package name="front" namespace="/front" extends="custom-default">
+     <!-- 报表信息 -->
+  		<action name="getReport" class="com.dqs.report.action.ReportAction">
+		    <result name="jsonList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult.result</param>
+		    </result>
+		</action>
+		<!-- 发布信息浏览 -->
+		<action name="getNews" method="jsonPageList" class="com.dqs.office.action.PublishInformationAction">
+		    <result name="jsonPageList" type="json">
+		      <param name="ignoreHierarchy">false</param>
+		      <param name="root">jsonResult</param>
+		    </result>
+		</action>
+		<action name="showNews" method="showNews" class="com.dqs.office.action.PublishInformationAction">
+		    <result name="showNews">/front/news/show.jsp</result>
+		</action>				
+    </package>
+    
+
+</struts>

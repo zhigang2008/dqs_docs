@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="EmergencyPlan">
+
+	<resultMap id="RM.EmergencyPlan" type="com.dqs.office.model.EmergencyPlan">
+        <result property="id" column="ID"/>
+        <result property="planTypeId" column="PLAN_TYPE_ID"/>
+        <result property="name" column="NAME"/>
+        <result property="planVersion" column="PLAN_VERSION"/>
+        <result property="department" column="DEPARTMENT"/>
+        <result property="submitterId" column="SUBMITTER_ID"/>
+        <result property="submitTime" column="SUBMIT_TIME"/>
+        <result property="status" column="STATUS"/>
+        <result property="planDescription" column="PLAN_DESCRIPTION"/>
+        <result property="planFile" column="PLAN_FILE"/>
+        <result property="fileSize" column="FILE_SIZE"/>
+        <association property="emergencyPlanType" column="PLAN_TYPE_ID" select="EmergencyPlanType.getById"></association>
+        <association property="documentStatus" column="STATUS" select="DocumentStatus.getById"></association>
+        <association property="submitter" column="SUBMITTER_ID" select="User.getById"></association>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="EmergencyPlan.columns">
+	    <![CDATA[
+		ID,PLAN_TYPE_ID,NAME,PLAN_VERSION,DEPARTMENT,SUBMITTER_ID,SUBMIT_TIME,STATUS,PLAN_DESCRIPTION,PLAN_FILE,FILE_SIZE
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="EmergencyPlan.insert" >
+    <![CDATA[
+        INSERT INTO T_EMERGENCY_PLAN (
+        	ID ,
+        	PLAN_TYPE_ID ,
+        	NAME ,
+        	PLAN_VERSION ,
+        	DEPARTMENT ,
+        	SUBMITTER_ID ,
+        	SUBMIT_TIME ,
+        	STATUS ,
+        	PLAN_DESCRIPTION ,
+        	PLAN_FILE,
+        	FILE_SIZE 
+        ) VALUES (
+        	#{id,jdbcType=DECIMAL} ,
+        	#{planTypeId,jdbcType=DECIMAL} ,
+        	#{name,jdbcType=VARCHAR} ,
+        	#{planVersion,jdbcType=VARCHAR} ,
+        	#{department,jdbcType=VARCHAR} ,
+        	#{submitterId,jdbcType=DECIMAL} ,
+        	#{submitTime,jdbcType=TIMESTAMP} ,
+        	#{status,jdbcType=DECIMAL} ,
+        	#{planDescription,jdbcType=VARCHAR} ,
+        	#{planFile,jdbcType=VARCHAR} ,
+        	#{fileSize,jdbcType=DECIMAL} 
+        )
+    ]]>
+		<!--oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL -->
+			
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="id">
+			SELECT S_T_EMERGENCY_PLAN.nextval  FROM DUAL 
+        </selectKey>
+	</insert>
+    
+	<update id="EmergencyPlan.update" >
+    <![CDATA[
+        UPDATE T_EMERGENCY_PLAN SET
+	        PLAN_TYPE_ID = #{planTypeId,jdbcType=DECIMAL} ,
+	        NAME = #{name,jdbcType=VARCHAR} ,
+	        PLAN_VERSION = #{planVersion,jdbcType=VARCHAR} ,
+	        DEPARTMENT = #{department,jdbcType=VARCHAR} ,
+	        SUBMITTER_ID = #{submitterId,jdbcType=DECIMAL} ,
+	        SUBMIT_TIME = #{submitTime,jdbcType=TIMESTAMP} ,
+	        STATUS = #{status,jdbcType=DECIMAL} ,
+	        PLAN_DESCRIPTION = #{planDescription,jdbcType=VARCHAR} ,
+	        PLAN_FILE = #{planFile,jdbcType=VARCHAR} ,
+	        FILE_SIZE = #{fileSize,jdbcType=DECIMAL} 
+        WHERE 
+	        ID = #{id} 
+    ]]>
+	</update>
+
+    <delete id="EmergencyPlan.delete">
+    <![CDATA[
+        DELETE FROM T_EMERGENCY_PLAN WHERE
+        ID = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="EmergencyPlan.getById" resultMap="RM.EmergencyPlan">
+		SELECT <include refid="EmergencyPlan.columns" />
+	    <![CDATA[
+		    FROM T_EMERGENCY_PLAN 
+	        WHERE 
+		        ID = #{id} 
+	    ]]>
+	</select>
+	<!-- 不建议,仅提供给数据量较少的基表查询 -->
+	 <select id="EmergencyPlan.findAll" resultMap="RM.EmergencyPlan">
+		SELECT <include refid="EmergencyPlan.columns" />
+	    <![CDATA[
+		    FROM T_EMERGENCY_PLAN 
+	    ]]>
+	</select>
+	<!-- 基础代码,视情况添加状态识别 -->
+	 <select id="EmergencyPlan.baseCode" resultMap="RM.EmergencyPlan">
+		SELECT <include refid="EmergencyPlan.columns" />
+	    <![CDATA[
+		    FROM T_EMERGENCY_PLAN 
+	    ]]>
+	    <!-- 视情况添加where条件 -->
+	</select>
+	
+	<sql id="EmergencyPlan.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(id)">
+				AND ID = #{id}
+			</if>
+	       <if test="@Ognl@isNotEmpty(planTypeId)">
+				AND PLAN_TYPE_ID = #{planTypeId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(name)">
+				AND NAME like '%'||#{name}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(planVersion)">
+				AND PLAN_VERSION = #{planVersion}
+			</if>
+	       <if test="@Ognl@isNotEmpty(department)">
+				AND DEPARTMENT like '%'||#{department}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(submitterId)">
+				AND SUBMITTER_ID = #{submitterId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(submitTimeBegin)">
+				AND SUBMIT_TIME >= #{submitTimeBegin}
+		   </if>
+		   <if test="@Ognl@isNotEmpty(submitTimeEnd)">
+				AND SUBMIT_TIME &lt;= #{submitTimeEnd}
+		   </if>
+	       <if test="@Ognl@isNotEmpty(status)">
+				AND STATUS = #{status}
+			</if>
+	       <if test="@Ognl@isNotEmpty(planDescription)">
+				AND PLAN_DESCRIPTION like '%'||#{planDescription}||'%'
+			</if>
+	       <if test="@Ognl@isNotEmpty(planFile)">
+				AND PLAN_FILE = #{planFile}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="EmergencyPlan.findPage.count" resultType="long">
+        SELECT count(*) FROM T_EMERGENCY_PLAN 
+		<include refid="EmergencyPlan.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="EmergencyPlan.findPage" resultMap="RM.EmergencyPlan">
+    	SELECT <include refid="EmergencyPlan.columns" />
+	    FROM T_EMERGENCY_PLAN 
+		<include refid="EmergencyPlan.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+    </select>
+
+    <select id="EmergencyPlan.getByName" resultMap="RM.EmergencyPlan" parameterType="java.lang.String">
+	    SELECT <include refid="EmergencyPlan.columns"/>
+	    <![CDATA[
+	        FROM T_EMERGENCY_PLAN where NAME = #{name}
+	    ]]>
+    </select>
+    
+	
+</mapper>
+
